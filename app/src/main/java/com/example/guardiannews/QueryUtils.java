@@ -1,8 +1,12 @@
 package com.example.guardiannews;
 
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +30,7 @@ public final class QueryUtils {
     private QueryUtils() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static List<NewsItem> fetchNewsItemData(String requestUrl) {
 
         // Create URL object
@@ -43,6 +50,7 @@ public final class QueryUtils {
         return newsItems;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private static List<NewsItem> extractNews(String jsonResponse){
 
         // If the JSON string is empty or null, then return early.
@@ -53,8 +61,34 @@ public final class QueryUtils {
         List<NewsItem> newsItems = new ArrayList<>();
 
         try {
-            JSONObject baseJsonResponse = new JSONObject(jsonResponse);
+            JSONObject firstResponse = new JSONObject(jsonResponse);
+            JSONObject baseResponse = firstResponse.getJSONObject("response");
+            JSONArray resultsArray = baseResponse.getJSONArray("results");
+            String author;
 
+            for(int i=0; i < resultsArray.length(); i++){
+                JSONObject currentArticle = resultsArray.getJSONObject(i);
+                JSONArray authorArray = currentArticle.getJSONArray("tags");
+                JSONObject authorObject = authorArray.optJSONObject(0);
+
+                String title = currentArticle.getString("webTitle");
+                String section = currentArticle.getString("sectionName");
+                String url = currentArticle.getString("webUrl");
+                String articleDate = currentArticle.getString("webPublicationDate");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                LocalDateTime date = LocalDateTime.parse(articleDate, formatter);
+
+                //Handling the author name in case it is present or not
+                if (authorObject != null){
+                    author = authorObject.getString("webTitle");
+                } else {
+                    Log.e("QueryUtils", "No author object");
+                    author = null;
+                }
+                NewsItem newsItem = new NewsItem(title, section, author, date, url);
+                newsItems.add(newsItem);
+
+            }
 
         } catch (JSONException e) {
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);

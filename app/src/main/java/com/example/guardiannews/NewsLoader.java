@@ -2,8 +2,11 @@ package com.example.guardiannews;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class NewsLoader extends AsyncTaskLoader<List<NewsItem>> {
         forceLoad();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public List<NewsItem> loadInBackground() {
@@ -33,6 +37,7 @@ public class NewsLoader extends AsyncTaskLoader<List<NewsItem>> {
         }
 
         // Perform the network request, parse the response, and extract a list of news items.
+        Log.i(LOG_TAG,"Before QueryUtils");
         List<NewsItem> newsItems = QueryUtils.fetchNewsItemData(mUrl);
         return newsItems;
     }

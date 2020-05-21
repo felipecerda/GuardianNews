@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<List<NewsItem>> {
 
-    private static final String REQUEST_URL = "https://content.guardianapis.com/search?";
+    private static final String REQUEST_URL = "https://content.guardianapis.com/search?q=debates&show-tags=contributor&api-key=test";
     public static final String LOG_TAG = NewsActivity.class.getName();
     private static final int NEWS_LOADER_ID = 1;
     private NewsAdapter mAdapter;
@@ -42,6 +43,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
 
         mEmptyStateTextView = findViewById(R.id.empty_view);
         newsListView.setEmptyView(mEmptyStateTextView);
+        Log.i(LOG_TAG,"onCreate");
 
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,10 +87,11 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     @Override
     public Loader<List<NewsItem>> onCreateLoader(int id, Bundle args) {
 
-        Uri baseUri = Uri.parse(REQUEST_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
+        //Uri baseUri = Uri.parse(REQUEST_URL);
+        //Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        /**/
+        Log.i(LOG_TAG,"This is the URL: " + REQUEST_URL);
+        return new NewsLoader(this, REQUEST_URL);
     }
 
     @Override
