@@ -43,7 +43,6 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
 
         mEmptyStateTextView = findViewById(R.id.empty_view);
         newsListView.setEmptyView(mEmptyStateTextView);
-        Log.i(LOG_TAG,"onCreate");
 
         newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
