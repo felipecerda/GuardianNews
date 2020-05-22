@@ -1,16 +1,16 @@
 package com.example.guardiannews;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class NewsItem {
 
     private String mTitle;
     private String mSection;
     private String mAuthor;
-    private LocalDateTime mDate;
+    private Date mDate;
     private String mUrl;
 
-    public NewsItem(String title, String section, String author, LocalDateTime date, String url){
+    public NewsItem(String title, String section, String author, Date date, String url){
         mTitle = title;
         mSection = section;
         mAuthor = author;
@@ -30,7 +30,7 @@ public class NewsItem {
         return mAuthor;
     }
 
-    public LocalDateTime getDate() {
+    public Date getDate() {
         return mDate;
     }
 

@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NewsAdapter extends ArrayAdapter<NewsItem> {
 
@@ -50,8 +50,8 @@ public class NewsAdapter extends ArrayAdapter<NewsItem> {
         authorView.setText(author);
 
         //Formats the date
-        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("LLL dd, yyyy 'at' HH:mm");
-        LocalDateTime localDateTime = currentNewsItem.getDate();
+        SimpleDateFormat FORMATTER = new SimpleDateFormat("LLL dd, yyyy 'at' HH:mm");
+        Date localDateTime = currentNewsItem.getDate();
         String formattedDate = FORMATTER.format(localDateTime);
 
         TextView dateView = listItemView.findViewById(R.id.date_time);

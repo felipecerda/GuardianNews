@@ -18,9 +18,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public final class QueryUtils {
@@ -75,8 +76,9 @@ public final class QueryUtils {
                 String section = currentArticle.getString("sectionName");
                 String url = currentArticle.getString("webUrl");
                 String articleDate = currentArticle.getString("webPublicationDate");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-                LocalDateTime date = LocalDateTime.parse(articleDate, formatter);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+                Date date = formatter.parse(articleDate);
 
                 //Handling the author name in case it is present or not
                 if (authorObject != null){
@@ -90,7 +92,7 @@ public final class QueryUtils {
 
             }
 
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);
         }
 
