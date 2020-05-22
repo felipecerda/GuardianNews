@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +27,7 @@ import java.util.List;
 
 public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<List<NewsItem>> {
 
-    private static final String REQUEST_URL = "https://content.guardianapis.com/search?q=debates&show-tags=contributor&api-key=test";
+    private static final String REQUEST_URL = "https://content.guardianapis.com/search?&show-tags=contributor";
     public static final String LOG_TAG = NewsActivity.class.getName();
     private static final int NEWS_LOADER_ID = 1;
     private NewsAdapter mAdapter;
@@ -86,11 +88,21 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     @Override
     public Loader<List<NewsItem>> onCreateLoader(int id, Bundle args) {
 
-        //Uri baseUri = Uri.parse(REQUEST_URL);
-        //Uri.Builder uriBuilder = baseUri.buildUpon();
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Log.i(LOG_TAG,"This is the URL: " + REQUEST_URL);
-        return new NewsLoader(this, REQUEST_URL);
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
+        Uri baseUri = Uri.parse(REQUEST_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("api-key", "test");
+        uriBuilder.appendQueryParameter("order-by", orderBy);
+
+        Log.i(LOG_TAG,"This is the URL: " + uriBuilder.toString());
+        return new NewsLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -124,6 +136,12 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
