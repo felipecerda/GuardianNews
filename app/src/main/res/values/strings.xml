@@ -6,4 +6,36 @@
 
     <string name="no_news">No news found.</string>
     <string name="no_internet_connection">No internet connection.</string>
+
+    <!-- Strings For Order-By Preference -->
+    <string name="settings_order_by_label">Order By</string>
+    <string name="settings_order_by_key" translatable="false">order-by</string>
+    <string name="settings_order_by_default" translatable="false">@string/settings_order_by_newest_value</string>
+
+    <string name="settings_order_by_newest_label">Newest</string>
+    <string name="settings_order_by_newest_value" translatable="false">newest</string>
+
+    <string name="settings_order_by_oldest_label">Oldest</string>
+    <string name="settings_order_by_oldest_value" translatable="false">oldest</string>
+
+    <!-- Strings For Section Preference -->
+    <string name="settings_section_label">Section</string>
+    <string name="settings_section_key" translatable="false">section</string>
+    <string name="settings_section_default" translatable="false">@string/settings_section_all_value</string>
+
+    <string name="settings_section_all_label">All</string>
+    <string name="settings_section_all_value" translatable="false">all</string>
+
+    <string name="settings_section_business_label">Business</string>
+    <string name="settings_section_business_value" translatable="false">business</string>
+
+    <string name="settings_section_world_label">World News</string>
+    <string name="settings_section_world_value" translatable="false">world</string>
+
+    <string name="settings_section_art_label">Art And Design</string>
+    <string name="settings_section_art_value" translatable="false">artanddesign</string>
+
+    <string name="settings_section_food_label">Food</string>
+    <string name="settings_section_food_value" translatable="false">food</string>
+
 </resources>
