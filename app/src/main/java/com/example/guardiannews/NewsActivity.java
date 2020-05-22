@@ -95,11 +95,20 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
                 getString(R.string.settings_order_by_default)
         );
 
+        String section = sharedPrefs.getString(
+                getString(R.string.settings_section_key),
+                getString(R.string.settings_section_default)
+        );
+
         Uri baseUri = Uri.parse(REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("api-key", "test");
         uriBuilder.appendQueryParameter("order-by", orderBy);
+        //If the user selects All in the section preferences, then no section parameter is appended
+        if(!section.equals("all")){
+            uriBuilder.appendQueryParameter("section", section);
+        }
 
         Log.i(LOG_TAG,"This is the URL: " + uriBuilder.toString());
         return new NewsLoader(this, uriBuilder.toString());
