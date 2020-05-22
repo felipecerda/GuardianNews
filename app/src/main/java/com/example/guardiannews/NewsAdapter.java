@@ -50,7 +50,7 @@ public class NewsAdapter extends ArrayAdapter<NewsItem> {
         authorView.setText(author);
 
         //Formats the date
-        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("LLL dd, yyyy 'at' hh:mm a");
+        DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("LLL dd, yyyy 'at' HH:mm");
         LocalDateTime localDateTime = currentNewsItem.getDate();
         String formattedDate = FORMATTER.format(localDateTime);
 
