@@ -1,6 +1,9 @@
 package com.example.guardiannews;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,55 +14,98 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class NewsAdapter extends ArrayAdapter<NewsItem> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+    private Context mContext;
+    private List<NewsItem> mNewsList;
 
-    public NewsAdapter(Activity context, ArrayList<NewsItem> newsItems){
-        super(context, 0, newsItems);
+    public NewsAdapter(Context context, List<NewsItem> newsItems){
+        mContext = context;
+        mNewsList = newsItems;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public NewsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_item, parent, false);
+        return new ViewHolder(v);
+    }
 
-        // Check if the existing view is being reused, otherwise inflate the view
-        View listItemView = convertView;
-        if(listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.news_list_item, parent, false);
+    @Override
+    public int getItemCount() {
+        return mNewsList.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private TextView titleView;
+        private TextView sectionView;
+        private TextView authorView;
+        private TextView dateView;
+        private View parentView;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.parentView = itemView;
+            titleView = itemView.findViewById(R.id.title);
+            sectionView = itemView.findViewById(R.id.section);
+            authorView = itemView.findViewById(R.id.author);
+            dateView = itemView.findViewById(R.id.date_time);
         }
+    }
 
-        NewsItem currentNewsItem = getItem(position);
+    @Override
+    public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder holder, int position) {
+        // Get the current news that was clicked on
+        final NewsItem currentNewsItem = mNewsList.get(position);
 
-        String title = currentNewsItem.getTitle();
-        String section = currentNewsItem.getSection();
-        String author = currentNewsItem.getAuthor();
-
-        TextView titleView = listItemView.findViewById(R.id.title);
-        titleView.setText(title);
-
-        TextView sectionView = listItemView.findViewById(R.id.section);
-        sectionView.setText(section);
-
-        TextView authorView = listItemView.findViewById(R.id.author);
-        authorView.setText(author);
+        holder.titleView.setText(currentNewsItem.getTitle());
+        holder.sectionView.setText(currentNewsItem.getSection());
+        holder.authorView.setText(currentNewsItem.getAuthor());
 
         //Formats the date
         SimpleDateFormat FORMATTER = new SimpleDateFormat("LLL dd, yyyy 'at' HH:mm");
         Date localDateTime = currentNewsItem.getDate();
         String formattedDate = FORMATTER.format(localDateTime);
 
-        TextView dateView = listItemView.findViewById(R.id.date_time);
-        dateView.setText(formattedDate);
+        holder.dateView.setText(formattedDate);
 
-        return listItemView;
+        // Set an OnClickListener to open a website with more information about the selected article
+        holder.parentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Convert the String URL into a URI object (to pass into the Intent constructor)
+                Uri newsItemUri = Uri.parse(currentNewsItem.getUrl());
+
+                // Create a new intent to view the news URI
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsItemUri);
+
+                // Send the intent to launch a new activity
+                mContext.startActivity(websiteIntent);
+            }
+        });
     }
 
+    /**
+     *  Clear all data (a list of {@link NewsItem} objects)
+     */
+    public void clearAll() {
+        mNewsList.clear();
+        notifyDataSetChanged();
+    }
 
+    /**
+     * Add  a list of {@link NewsItem}
+     * @param newsList is the list of news, which is the data source of the adapter
+     */
+    public void addAll(List<NewsItem> newsList) {
+        mNewsList.clear();
+        mNewsList.addAll(newsList);
+        notifyDataSetChanged();
+    }
 
 }

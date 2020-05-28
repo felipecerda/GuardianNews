@@ -2,6 +2,9 @@ package com.example.guardiannews;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
@@ -38,30 +41,17 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView newsListView = findViewById(R.id.list);
+        //ListView newsListView = findViewById(R.id.list);
+        EmptyRecyclerView newsRecyclerView = findViewById(R.id.list);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         mAdapter = new NewsAdapter(this, new ArrayList<NewsItem>());
-        newsListView.setAdapter(mAdapter);
+        newsRecyclerView.setAdapter(mAdapter);
+        newsRecyclerView.setLayoutManager(layoutManager);
 
         mEmptyStateTextView = findViewById(R.id.empty_view);
-        newsListView.setEmptyView(mEmptyStateTextView);
-
-        newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // Find the current news item that was clicked on
-                NewsItem currentNewsItem = mAdapter.getItem(position);
-
-                // Convert the String URL into a URI object (to pass into the Intent constructor)
-                Uri newsItemUri = Uri.parse(currentNewsItem.getUrl());
-
-                // Create a new intent to view the news item URI
-                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsItemUri);
-
-                // Send the intent to launch a new activity
-                startActivity(websiteIntent);
-            }
-        });
+        newsRecyclerView.setEmptyView(mEmptyStateTextView);
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -124,7 +114,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
         mEmptyStateTextView.setText(R.string.no_news);
 
         // Clear the adapter of previous news data
-        mAdapter.clear();
+        mAdapter.clearAll();
 
         if (newsItems != null && !newsItems.isEmpty()) {
             mAdapter.addAll(newsItems);
@@ -134,7 +124,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     @Override
     public void onLoaderReset(Loader<List<NewsItem>> loader) {
         // Loader reset, so we can clear out our existing data.
-        mAdapter.clear();
+        mAdapter.clearAll();
     }
 
     @Override
