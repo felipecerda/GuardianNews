@@ -134,6 +134,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     }
 
     @Override
+    // This method is called whenever an item in the options menu is selected.
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
